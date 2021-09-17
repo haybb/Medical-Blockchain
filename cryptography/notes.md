@@ -6,16 +6,16 @@
 
 ### Protocole IPFS
 Protocole pair-à-pair fonctionnant sur le principe de stockage chez chaque utilisateur (cf [IPFS](https://ipfs.io/))
-    * Avantages:
-        1. Transferts rapide
-        2. Stockage sans serveur
-    * Inconvénients:
-        1. Chaque node est visible
-        2. Chaque identifiant de fichier est visible
-    * Solutions:
-        1. Chiffrement des données
-    * Connexion avec la blockchain:
-        1. [iCommuty](https://icommunity.io/en/what-is-ifps-the-hard-drive-for-blockchain/)
+* Avantages:
+  1. Transferts rapide
+  2. Stockage sans serveur
+* Inconvénients:
+  1. Chaque node est visible
+  2. Chaque identifiant de fichier est visible
+* Solutions:
+  1. Chiffrement des données
+* Connexion avec la blockchain:
+  1. [iCommuty](https://icommunity.io/en/what-is-ifps-the-hard-drive-for-blockchain/)
 
 
 
