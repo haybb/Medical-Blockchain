@@ -1,0 +1,51 @@
+======================================================
+======================  Notes  =======================
+======================================================
+
+
+
+==============  Stockage des données  ================
+
+- Protocole IPFS: protocole pair-à-pair fonctionnant sur le principe de stockage chez chaque
+        utilisateur
+        https://ipfs.io/
+        - Avantages:
+            Transferts rapide
+            Stockage sans serveur
+        - Inconvénients:
+            Chaque node est visible
+            Chaque identifiant de fichier est visible
+        - Solutions:
+            Chiffrement des données
+        - Connexion avec l a blockchain:
+            https://icommunity.io/en/what-is-ifps-the-hard-drive-for-blockchain/
+
+
+
+=============  Chiffrement des données  ==============
+
+- Chiffrement asymétrique: utilisations de 2 clés par utilisateur: une publique et une privée.
+        De ce fait, on chiffre avec la clé publique du destinataire qui est donc le seul à pouvoir
+        décrypter le fichier avec sa clé perso.
+        Les clés sont des produits de grands nombres premiers
+        https://maaars.fr/cryptographie-quelques-bases/
+        - Avantages:
+            Sécurité de la confidentialité entre chaque utilisateur
+            On est sûr que le deestinataire est le bon (si c'est le mauvais, il ne pourra pas décrypter)
+        - Inconvénients:
+            Chiffrement à chaque transfert
+            Lenteur du chiffrement
+        - Solutions:
+            Fichier toujours chiffré par chiffrement symétrique, et chiffrement asymétrique de la clé
+
+- Chiffrement symétrique: chiffrement d'un fichier qui génère une clé
+        https://maaars.fr/cryptographie-quelques-bases/
+        - Avantages:
+            Fichiers toujours chiffrés
+            Rapidité
+        - Inconvénients:
+
+        - Solutions:
+
+
+            
