@@ -23,23 +23,22 @@ Protocole pair-à-pair fonctionnant sur le principe de stockage chez chaque util
 
 ### Chiffrement asymétrique
 Utilisations de 2 clés par utilisateur: une publique et une privée. De ce fait, on chiffre avec la clé publique du destinataire qui est donc le seul à pouvoir décrypter le fichier avec sa clé perso. Les clés sont des produits de grands nombres premiers (cf [MAARS](https://maaars.fr/cryptographie-quelques-bases/)).
-    * Avantages:
-        1. Sécurité de la confidentialité entre chaque utilisateur
-        2. On est sûr que le deestinataire est le bon (si c'est le mauvais, il ne pourra pas décrypter)
-    * Inconvénients:
-        1. Chiffrement à chaque transfert
-        2. Lenteur du chiffrement
-    * Solutions:
-        1. Fichier toujours chiffré par chiffrement symétrique, et chiffrement asymétrique de la clé
+* Avantages:
+    1. Sécurité de la confidentialité entre chaque utilisateur
+    2. On est sûr que le deestinataire est le bon (si c'est le mauvais, il ne pourra pas décrypter)
+* Inconvénients:
+    1. Chiffrement à chaque transfert
+    2. Lenteur du chiffrement
+* Solutions:
+    1. Fichier toujours chiffré par chiffrement symétrique, et chiffrement asymétrique de la clé
 
 ### Chiffrement symétrique
 Chiffrement d'un fichier qui génère une clé (cf [MAARS](https://maaars.fr/cryptographie-quelques-bases/)).
-    * Avantages:
-        1. Fichiers toujours chiffrés
-        2. Rapidité
-    * Inconvénients:
-    
-    * Solutions:
+* Avantages:
+    1. Fichiers toujours chiffrés
+    2. Rapidité
+* Inconvénients:
+* Solutions:
 
 
             
