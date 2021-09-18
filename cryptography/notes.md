@@ -38,7 +38,13 @@ Chiffrement d'un fichier qui génère une clé (cf [MAARS](https://maaars.fr/cry
     1. Fichiers toujours chiffrés
     2. Rapidité
 * __Inconvénients__
+    1. Les clés doivent être à usage unique
+    2. Les clés doivent être transmises de manière cryptée
 * __Solutions__
+    1. Réencoder le fichier pour chaque nouvel utilisateur
+    2. Transmettre les clés à l'aide d'un chiffrement asymétrique
+* __Algorithmes__
+    1. [linux.goffinet.org](https://linux.goffinet.org/administration/confidentialite/chiffrement-symetrique)
 
 
 ## Lien entre les deux parties
@@ -46,5 +52,15 @@ Le protocole IPFS permet un transfert rapide et un stockage facile des fichiers.
 
 Pour la partie chiffrement, il est possible (même très fortement conseillé) d'en mixer plusieurs. Par exemple, il serait intelligent d'associer chiffrement symétrique et asymétrique:
 1. On encode le fichier en chiffrement symétrique, générant ainsi une clé qui lui est associé. Ce processus est assez rapide.
-2. On transmet ensuite la clé auparavant chiffrée asymétriquement. En effet, ce dernier est un processus long et coûteux informatiquement (et temporellement) car il faut travailler sur les nombres premiers. Plus le fichier à chiffrer est lourd, plus il faudra de temps pour le crypter. Ainsi, en ne chiffrant qu'une clé de petite taille, on gagne un temps considérable.
+2. On transmet ensuite la clé auparavant chiffrée asymétriquement. En effet, ce dernier est un processus long et coûteux informatiquement (et temporellement) car il faut travailler sur les nombres premiers. Plus le fichier à chiffrer est lourd, plus il faudra de temps pour le crypter. Ainsi, en ne chiffrant qu'une clé de petite taille, on gagne un temps considérable.  
 Cet enchaînement de chiffrements permet de gagner en temps et d'augmenter la sécurité: tous les fichiers stockés sont cryptés, ainsi quelqu'un qui en fait la demande ne pourra l'ouvrir sans la clé nécéssaire (il est d'ailleurs évident qu'on ne peut stocker les fichiers en clair, donc un cryptage du type du symétrique est nécéssaire). Aussi, ça nous évite de chiffrer asymétriquement le fichier à chaque envoi, ce qui est long et compliqué pour des machines de faible puissance.
+
+
+## Sécurité et confidentialité
+Le but de ce TIPE étant d'obtenir une grande flexibilité sur la gestion de la vie privée des personnes, il est nécéssaire de construire un dossier en plusieurs parties indépendantes les unes des autres afin de pouvoir modifier les autorisations d'accès à ces parties à tout moment.
+
+#### Première idée
+Une des possibilités est de découper chaque dossier en plusieurs parties, qui seront stockées ou non ensemble.  
+Par exemple, il est possible de distinguer les données identitaires d'une personne, les maladies qu'elle a eu (contenant donc les symptômes et éventuels traitemens aboutissant ou non à une guérison), les interventions chirurgicales, les problèmes de santé ne nécéssitant pas spécialement de recherche (fractures, entorses...). On peut ainsi obtenir un dossier complet constitué de différentes parties qui ne serait accessibles qu'en fonction de l'utilisateur: un médecin et le patient devraient avoir accès à toutes les données, un centre de recherches qu'aux parties rapportant les maladies sans connaître l'identité du malade, les assurances qu'à la liste des opérations et traitement (avec l'identité) sans savoir les résultats...  
+Il devient ainsi possible de modifier la confidentialité à tout moment: si une personne qui avait donné son identité avec la partie maladie à un centre de recherche veut réobtenir son anonymat, il suffit de changer l'autorisation d'accès à la partie identité. Ainsi, ces centres ne seront plus en capacité de recevoir ces données, ou tout du moins de les décrypter.  
+Le principal problème réside dans la méthode de chiffrerment des données. En effet, un algorithme de chiffrement symétrique impose de changer la clé à chaque nouvel envoi: on ne peut donc pas gérer la confidentiatlié grâce à elle. Et si on ne le changeait pas à chaque nouvel envoi, la sécurité serait d'un coup réduite de manière conséquente. Il faut donc privilégier soit la sécurité, soit la facilité *(spoil: on va chercher d'autres méthodes de chiffrement)*.
