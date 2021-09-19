@@ -54,8 +54,7 @@ Pour la partie chiffrement, il est possible (même très fortement conseillé) d
   1. On encode le fichier en chiffrement symétrique, générant ainsi une clé qui lui est associé. Ce processus est assez rapide.
   2. On transmet ensuite la clé auparavant chiffrée asymétriquement. En effet, ce dernier est un processus long et coûteux informatiquement (et temporellement) car il faut travailler sur les nombres premiers. Plus le fichier à chiffrer est lourd, plus il faudra de temps pour le crypter. Ainsi, en ne chiffrant qu'une clé de petite taille, on gagne un temps considérable.  
 
-</ a>
-  Cet enchaînement de chiffrements permet de gagner en temps et d'augmenter la sécurité: tous les fichiers stockés sont cryptés, ainsi quelqu'un qui en fait la demande ne pourra l'ouvrir sans la clé nécéssaire (il est d'ailleurs évident qu'on ne peut stocker les fichiers en clair, donc un cryptage du type du symétrique est nécéssaire). Aussi, ça nous évite de chiffrer asymétriquement le fichier à chaque envoi, ce qui est long et compliqué pour des machines de faible puissance.
+Cet enchaînement de chiffrements permet de gagner en temps et d'augmenter la sécurité: tous les fichiers stockés sont cryptés, ainsi quelqu'un qui en fait la demande ne pourra l'ouvrir sans la clé nécéssaire (il est d'ailleurs évident qu'on ne peut stocker les fichiers en clair, donc un cryptage du type du symétrique est nécéssaire). Aussi, ça nous évite de chiffrer asymétriquement le fichier à chaque envoi, ce qui est long et compliqué pour des machines de faible puissance.
 
 
 ## Sécurité et confidentialité
