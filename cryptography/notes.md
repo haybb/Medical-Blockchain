@@ -1,6 +1,24 @@
 # Notes
 Fichier contenant les notes relatives à la partie cryptographie.
 
+## Important
+
+* Une idée d'utilisation de la blockchain pour les dossiers médicaux: [Wikipedia](https://en.wikipedia.org/wiki/Privacy_and_blockchain#Health_care_records)
+
+
+
+
+## Sommaire
+
+1. __Stockage des données__
+  * Protocole IPFS
+2. __Chiffrement des données__
+  * Chiffrement asymétrique
+  * Chiffrement symétrique
+3. __Lien entre les 2 parties__
+4. __Sécurité et confidentialité__
+  * Première idée
+
 
 ## Stockage des données
 
@@ -22,6 +40,7 @@ Protocole pair-à-pair fonctionnant sur le principe de stockage chez chaque util
 ## Chiffrement des données
 
 #### Chiffrement asymétrique
+---
 Utilisation de 2 clés par utilisateur: une publique et une privée. De ce fait, on chiffre avec la clé publique du destinataire qui est donc le seul à pouvoir décrypter le fichier avec sa clé perso. Les clés sont des produits de grands nombres premiers (cf [MAARS](https://maaars.fr/cryptographie-quelques-bases/)).
 * __Avantages__
     1. Sécurité de la confidentialité entre chaque utilisateur
@@ -33,6 +52,7 @@ Utilisation de 2 clés par utilisateur: une publique et une privée. De ce fait,
     1. Fichier toujours chiffré par chiffrement symétrique, et chiffrement asymétrique de la clé
 
 #### Chiffrement symétrique
+---
 Chiffrement d'un fichier qui génère une clé (cf [MAARS](https://maaars.fr/cryptographie-quelques-bases/)).
 * __Avantages__
     1. Fichiers toujours chiffrés
@@ -51,6 +71,7 @@ Chiffrement d'un fichier qui génère une clé (cf [MAARS](https://maaars.fr/cry
 Le protocole IPFS permet un transfert rapide et un stockage facile des fichiers. En effet, aucune donnée n'a besoin d'être stockée sur serveur étant donné qu'elles se trouvent sur les ordinateurs des utilisateurs. De même, ceci assure la plupart du temps une proximité entre ordinateurs qui permet de gagner en temps.
 
 Pour la partie chiffrement, il est possible (même très fortement conseillé) d'en mixer plusieurs. Par exemple, il serait intelligent d'associer chiffrement symétrique et asymétrique:
+
   1. On encode le fichier en chiffrement symétrique, générant ainsi une clé qui lui est associé. Ce processus est assez rapide.
   2. On transmet ensuite la clé auparavant chiffrée asymétriquement. En effet, ce dernier est un processus long et coûteux informatiquement (et temporellement) car il faut travailler sur les nombres premiers. Plus le fichier à chiffrer est lourd, plus il faudra de temps pour le crypter. Ainsi, en ne chiffrant qu'une clé de petite taille, on gagne un temps considérable.  
 
@@ -58,10 +79,15 @@ Cet enchaînement de chiffrements permet de gagner en temps et d'augmenter la s�
 
 
 ## Sécurité et confidentialité
-Le but de ce TIPE étant d'obtenir une grande flexibilité sur la gestion de la vie privée des personnes, il est nécéssaire de construire un dossier en plusieurs parties indépendantes les unes des autres afin de pouvoir modifier les autorisations d'accès à ces parties à tout moment.
+Le but de ce TIPE étant d'obtenir une grande flexibilité sur la gestion de la vie privée des personnes, il est nécéssaire de construire les dossiers médicaux en plusieurs parties indépendantes les unes des autres afin de pouvoir modifier les autorisations d'accès à ces parties à tout moment.
 
 #### Première idée
-Une des possibilités est de découper chaque dossier en plusieurs parties, qui seront stockées ou non ensemble.  
+---
+Une des possibilités est de découper chaque dossier en plusieurs parties, qui seront stockées ensemble ou non.  
 Par exemple, il est possible de distinguer les données identitaires d'une personne, les maladies qu'elle a eu (contenant donc les symptômes et éventuels traitemens aboutissant ou non à une guérison), les interventions chirurgicales, les problèmes de santé ne nécéssitant pas spécialement de recherche (fractures, entorses...). On peut ainsi obtenir un dossier complet constitué de différentes parties qui ne serait accessibles qu'en fonction de l'utilisateur: un médecin et le patient devraient avoir accès à toutes les données, un centre de recherches qu'aux parties rapportant les maladies sans connaître l'identité du malade, les assurances qu'à la liste des opérations et traitement (avec l'identité) sans savoir les résultats...  
 Il devient ainsi possible de modifier la confidentialité à tout moment: si une personne qui avait donné son identité avec la partie maladie à un centre de recherche veut réobtenir son anonymat, il suffit de changer l'autorisation d'accès à la partie identité. Ainsi, ces centres ne seront plus en capacité de recevoir ces données, ou tout du moins de les décrypter.  
+
+* __Première méthode:__ on classe chaque utilisateur dans des types: patient, médecin, recherche... Et chaque type possède sa propre clé - une sorte d'identificateur - qui permet ou non d'ouvrir chaque dossier. Mais il faudrait donc avoir une seule clé qui puisse déchiffrer chaque partie du dossier. Ainsi, la sécurité serait réduite. Et ce n'est donc plus du chiffrage symétrique classique puisqu'une clé n'est pas unique à un fichier.
+* __Deuxième méthode:__ même principe pour les types, mais on en crée aussi pour les parties des dossiers. Ainsi chaque type d'utilisateur possède une clé correspondant à chaque type du dossier. On a ainsi juste à changer le chiffrement d'une partie du dossier lorsqu'on veut modifier qui y a accès. Mais il faudrait que chaque fichier soit dupliqué et chiffré differemment, ce qui nécéssite beaucoup plus d'espace de stockage.
+
 Le principal problème réside dans la méthode de chiffrerment des données. En effet, un algorithme de chiffrement symétrique impose de changer la clé à chaque nouvel envoi: on ne peut donc pas gérer la confidentiatlié grâce à elle. Et si on ne le changeait pas à chaque nouvel envoi, la sécurité serait d'un coup réduite de manière conséquente. Il faut donc privilégier soit la sécurité, soit la facilité *(spoil: on va chercher d'autres méthodes de chiffrement)*.
