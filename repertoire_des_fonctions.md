@@ -11,7 +11,7 @@ Exemple:
 * __Renvoi__
     - _rien_
 * __Description__
-Cette fonction est utilisée pour dessiner la courbe de la fonction _f_ dans un intervalle.
+    - Cette fonction est utilisée pour dessiner la courbe de la fonction _f_ dans un intervalle.
 
 
 ## Partie blockchain
