@@ -91,3 +91,14 @@ Il devient ainsi possible de modifier la confidentialité à tout moment: si une
 * __Deuxième méthode:__ même principe pour les types, mais on en crée aussi pour les parties des dossiers. Ainsi chaque type d'utilisateur possède une clé correspondant à chaque type du dossier. On a ainsi juste à changer le chiffrement d'une partie du dossier lorsqu'on veut modifier qui y a accès. Mais il faudrait que chaque fichier soit dupliqué et chiffré differemment, ce qui nécéssite beaucoup plus d'espace de stockage.
 
 Le principal problème réside dans la méthode de chiffrerment des données. En effet, un algorithme de chiffrement symétrique impose de changer la clé à chaque nouvel envoi: on ne peut donc pas gérer la confidentiatlié grâce à elle. Et si on ne le changeait pas à chaque nouvel envoi, la sécurité serait d'un coup réduite de manière conséquente. Il faut donc privilégier soit la sécurité, soit la facilité *(spoil: on va chercher d'autres méthodes de chiffrement)*.
+
+
+#### Idée finale
+Les utilisateurs seront classés selon différentes catégories afin de pouvoir identifier les autorisations de chacun (cf [notes_globales.md](../notes_globales.md)).  
+Chaque dossier médical sera divisé en plusieurs parties (cf [notes_globales.md](../notes_globales.md)). Elles seront regroupées ensemble et une clé d'identification y sera attribuée, c'est cette dernière qui sera envoyé dans la blockchain.  
+Ainsi, il est plus facile d'identifier chaque changement sur les fichiers, de n'envoyer uniquement les fichiers auxquels un utilisateur à le droit d'avoir accès, etc.  
+
+Pour identifier chaque utilisateur, une paire clé publique / clé privée sera attribuée à chacun. La clé publique sera stockée dans une base de données avec l'identifiant de l'utilisateur et son type.  
+Lorsqu'un utilisateur voudra accéder à un fichier, il lui faudra transmettre la clé d'identification du dossier médical, chiffrée avec sa clé privée. Ainsi le serveur pourra l'identifier en retrouvant sa clé publique dans la base de données, et ensuite vérifier les autorisations en fonction de son type et du dernier bloc de la blockchain. Il pourra ensuite transmettre les fichiers chiffrés avec la clé publique de l'utilisateur (cf [cette image](diagramme_requetes.jpeg)).  
+Lors de l'envoi d'un fichier, le même principe de requête est effectué, avec le fichier chiffré. Le serveur vérifie alors les autorisations de modification et le cas échéant, modifie le fichier stocké (cf [la même image](diagramme_requetes.jpeg)).
+

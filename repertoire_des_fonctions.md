@@ -1,5 +1,5 @@
-# Répertoire des foncions
-Ce fichier sera utiliser pour documenter l'ensemble des fonctions crées. Ainsi, il sera plus simple de mettre en commun les parties et de lier les fonctions entre elles.  
+# Répertoire des fonctions
+Ce fichier sera utiliser pour documenter l'ensemble des fonctions qui peuvent être nécéssaires à lier les deux parties. Ainsi, il sera plus simple de mettre tout en commun et de lier les fonctions entre elles.  
 Les fonctions sont triées en fonction de chaque fichier.
 Les fonctions seront présentées avec leur nom, les arguments et leur type, ce qui est renvoyé et son type, ce que va faire la fonction.  
 Exemple:
