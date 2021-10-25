@@ -40,7 +40,7 @@ Protocole pair-à-pair fonctionnant sur le principe de stockage chez chaque util
 ## Chiffrement des données
 
 #### Chiffrement asymétrique
----
+
 Utilisation de 2 clés par utilisateur: une publique et une privée. De ce fait, on chiffre avec la clé publique du destinataire qui est donc le seul à pouvoir décrypter le fichier avec sa clé perso. Les clés sont des produits de grands nombres premiers (cf [MAARS](https://maaars.fr/cryptographie-quelques-bases/)).
 * __Avantages__
     1. Sécurité de la confidentialité entre chaque utilisateur
@@ -52,7 +52,7 @@ Utilisation de 2 clés par utilisateur: une publique et une privée. De ce fait,
     1. Fichier toujours chiffré par chiffrement symétrique, et chiffrement asymétrique de la clé
 
 #### Chiffrement symétrique
----
+
 Chiffrement d'un fichier qui génère une clé (cf [MAARS](https://maaars.fr/cryptographie-quelques-bases/)).
 * __Avantages__
     1. Fichiers toujours chiffrés
@@ -82,7 +82,7 @@ Cet enchaînement de chiffrements permet de gagner en temps et d'augmenter la s�
 Le but de ce TIPE étant d'obtenir une grande flexibilité sur la gestion de la vie privée des personnes, il est nécéssaire de construire les dossiers médicaux en plusieurs parties indépendantes les unes des autres afin de pouvoir modifier les autorisations d'accès à ces parties à tout moment.
 
 #### Première idée
----
+
 Une des possibilités est de découper chaque dossier en plusieurs parties, qui seront stockées ensemble ou non.  
 Par exemple, il est possible de distinguer les données identitaires d'une personne, les maladies qu'elle a eu (contenant donc les symptômes et éventuels traitemens aboutissant ou non à une guérison), les interventions chirurgicales, les problèmes de santé ne nécéssitant pas spécialement de recherche (fractures, entorses...). On peut ainsi obtenir un dossier complet constitué de différentes parties qui ne serait accessibles qu'en fonction de l'utilisateur: un médecin et le patient devraient avoir accès à toutes les données, un centre de recherches qu'aux parties rapportant les maladies sans connaître l'identité du malade, les assurances qu'à la liste des opérations et traitement (avec l'identité) sans savoir les résultats...  
 Il devient ainsi possible de modifier la confidentialité à tout moment: si une personne qui avait donné son identité avec la partie maladie à un centre de recherche veut réobtenir son anonymat, il suffit de changer l'autorisation d'accès à la partie identité. Ainsi, ces centres ne seront plus en capacité de recevoir ces données, ou tout du moins de les décrypter.  
