@@ -1,4 +1,4 @@
-# TIPE Blockchain dans la santé
+# Sécurisation des dossiers médicaux grâce à la blockchain
 
 TIPE de l'année 2021/2022 par deux MP du lycée Kléber de Strasbourg.
 Le thème de l'année étant "Santé et Prévention", nous avons choisi de nos orienter sur les données informatiques utiles en médecine.
