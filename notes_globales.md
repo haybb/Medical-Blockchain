@@ -9,9 +9,9 @@ Pour gérer les différents utilisateurs, il faudra leur affecter un type parmi 
 * Patient
 * Médecin
 * Infirmier
-* _Pharmacien_
+* Pharmacien
 * Recherche
-* _Bonus: pompier_
+* Bonus: pompier
 
 
 ## Dossiers médicaux
@@ -26,7 +26,8 @@ Pour gérer les autorisations d'accès aux différentes parties d'un dossier, il
 
 
 ## Blockchain
-Cette blockchain regroupera l'ensemble des patients. Ainsi, on ne gérera qu'une seule chaine, et celle-ci sera actualisée très souvent. Cela permet d'éviter son piratage.  
+Cette blockchain regroupera l'ensemble des patients. Ainsi, on ne gérera qu'une seule chaine, et celle-ci sera actualisée très souvent. Cela permet d'éviter son piratage. 
+Pour éviter que n'importe qui puisse ajouter des blocs et ainsi modifier les dernières informations en date, cette blockchain sera en __gouvernance semi-fermée__.   
 Les hash sont effectués en __sha256__.
 Dans chaque bloc de la blockchain seront stockées les infos suivantes:
 

@@ -10,15 +10,18 @@ Fichier contenant les notes relatives à la partie cryptographie.
 
 ## Sommaire
 
-1. __Stockage des données__
-  * Protocole IPFS
-2. __Chiffrement des données__
-  * Chiffrement asymétrique
-  * Chiffrement symétrique
-3. __Lien entre les 2 parties__
-4. __Sécurité et confidentialité__
-  * Première idée
-
+* __Stockage des données__
+  1. Protocole IPFS
+* __Chiffrement des données__
+  1. Chiffrement asymétrique
+  2. Chiffrement symétrique
+* __Lien entre les 2 parties__
+* __Sécurité et confidentialité__
+  1. Première idée
+* __Projet final__
+  1. Structure globale
+  2. Chiffrement
+  3. Transfert des fichiers
 
 ## Stockage des données
 
@@ -50,10 +53,14 @@ Utilisation de 2 clés par utilisateur: une publique et une privée. De ce fait,
     2. Lenteur du chiffrement
 * __Solutions__
     1. Fichier toujours chiffré par chiffrement symétrique, et chiffrement asymétrique de la clé
+* __Algorithmes__
+    1. [RSA](https://fr.wikipedia.org/wiki/Chiffrement_RSA) (chiffrement et signature)
+    2. [DSA](https://fr.wikipedia.org/wiki/Digital_Signature_Algorithm) (signature)
 
 #### Chiffrement symétrique
 
-Chiffrement d'un fichier qui génère une clé (cf [MAARS](https://maaars.fr/cryptographie-quelques-bases/)).
+Chiffrement d'un fichier qui génère une clé (cf [MAARS](https://maaars.fr/cryptographie-quelques-bases/)).  
+Il existe 2 types de chiffrement symétrique: [par flot](https://fr.wikipedia.org/wiki/Chiffrement_par_flot) et [par bloc](https://fr.wikipedia.org/wiki/Chiffrement_par_bloc) (pour plus d'infos: [PDF](http://iml.univ-mrs.fr/~rodier/Cours/Blocs.pdf)). Le premier chiffre l'entièreté du fichier, peu importe sa longueur. Le deuxième va séparer le fichier en blocs (norme actuelle 128 bits) et les chiffrer séparément.
 * __Avantages__
     1. Fichiers toujours chiffrés
     2. Rapidité
@@ -65,6 +72,7 @@ Chiffrement d'un fichier qui génère une clé (cf [MAARS](https://maaars.fr/cry
     2. Transmettre les clés à l'aide d'un chiffrement asymétrique
 * __Algorithmes__
     1. [linux.goffinet.org](https://linux.goffinet.org/administration/confidentialite/chiffrement-symetrique)
+    2. [AES](https://fr.wikipedia.org/wiki/Standard_de_chiffrement_avanc%C3%A9)
 
 
 ## Lien entre les deux parties
@@ -93,7 +101,8 @@ Il devient ainsi possible de modifier la confidentialité à tout moment: si une
 Le principal problème réside dans la méthode de chiffrerment des données. En effet, un algorithme de chiffrement symétrique impose de changer la clé à chaque nouvel envoi: on ne peut donc pas gérer la confidentiatlié grâce à elle. Et si on ne le changeait pas à chaque nouvel envoi, la sécurité serait d'un coup réduite de manière conséquente. Il faut donc privilégier soit la sécurité, soit la facilité *(spoil: on va chercher d'autres méthodes de chiffrement)*.
 
 
-#### Idée finale
+## Projet final
+#### Structure globale
 Les utilisateurs seront classés selon différentes catégories afin de pouvoir identifier les autorisations de chacun (cf [notes_globales.md](../notes_globales.md)).  
 Chaque dossier médical sera divisé en plusieurs parties (cf [notes_globales.md](../notes_globales.md)). Elles seront regroupées ensemble et une clé d'identification y sera attribuée, c'est cette dernière qui sera envoyé dans la blockchain.  
 Ainsi, il est plus facile d'identifier chaque changement sur les fichiers, de n'envoyer uniquement les fichiers auxquels un utilisateur à le droit d'avoir accès, etc.  
@@ -102,3 +111,11 @@ Pour identifier chaque utilisateur, une paire clé publique / clé privée sera 
 Lorsqu'un utilisateur voudra accéder à un fichier, il lui faudra transmettre la clé d'identification du dossier médical, chiffrée avec sa clé privée. Ainsi le serveur pourra l'identifier en retrouvant sa clé publique dans la base de données, et ensuite vérifier les autorisations en fonction de son type et du dernier bloc de la blockchain. Il pourra ensuite transmettre les fichiers chiffrés avec la clé publique de l'utilisateur (cf [cette image](diagramme_requetes.jpeg)).  
 Lors de l'envoi d'un fichier, le même principe de requête est effectué, avec le fichier chiffré. Le serveur vérifie alors les autorisations de modification et le cas échéant, modifie le fichier stocké (cf [la même image](diagramme_requetes.jpeg)).
 
+#### Chiffrement
+Les dossiers médicaux stockés dans le(s) serveurs(s) seront divisés en plusieurs parties et chiffrés de manière symétrique, seul le serveur aura accès aux clés pour les rassembler et les déchiffrer. Le chiffrement symétrique sera par blocs, ce qui permet de chiffrer les différents blocs d'un dossier séparément. On utilisera l'algorithme [AES](https://fr.wikipedia.org/wiki/Standard_de_chiffrement_avanc%C3%A9) qui est aujourd'hui le plus répandu et donc plus simple à étudier pour ce TIPE.  
+Les couples de clés publique/privée seront générées via l'algorithme [RSA](https://fr.wikipedia.org/wiki/Chiffrement_RSA), choix fait pour les mêmes raisons que pour AES.
+Les requêtes entre utilisateurs et serveur seront chiffrées en asymétrique afin de pouvoir identifier chaque utilisateur, et ainsi son type. Le message sera constitué de l'identification de l'utilisateur concaténée avec la requête chiffrée. De ce fait, il sera plus rapide de l'identifier (et si ce n'est pas le bon, on cherchera quand même partout).
+
+#### Transfert des fichiers
+Méthode classique: combinaison des chiffrements symétrique et asymétrique.
+En ce qui concerne l'asymétrique, on utilisera un [mécanisme d'authentification](https://fr.wikipedia.org/wiki/Cryptographie_asym%C3%A9trique#M%C3%A9canismes_d'authentification).
