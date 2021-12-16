@@ -1,0 +1,4 @@
+*.autosave
+*.dia~
+*.vscode
+**/__pycache__
