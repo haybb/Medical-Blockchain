@@ -13,6 +13,11 @@ Pour gérer les différents utilisateurs, il faudra leur affecter un type parmi 
 * Recherche
 * Bonus: pompier
 
+_Les utilisateurs possèderont plusieurs attributs:_
+* _ID (unique)_
+* _type_
+* _infos complémentaires (nom, groupe...)_
+
 
 ## Dossiers médicaux
 Pour gérer les autorisations d'accès aux différentes parties d'un dossier, il faudra découper ce dernier en plusieurs parties _(à compléter)_:
