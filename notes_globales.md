@@ -15,8 +15,9 @@ Pour gérer les différents utilisateurs, il faudra leur affecter un type parmi 
 
 _Les utilisateurs possèderont plusieurs attributs:_
 * _ID (unique)_
-* _type_
-* _infos complémentaires (nom, groupe...)_
+* _Type_
+* _Clé publique_
+* _Infos complémentaires (nom, groupe...)_
 
 
 ## Dossiers médicaux
