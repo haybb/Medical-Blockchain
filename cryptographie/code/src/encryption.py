@@ -2,8 +2,14 @@
 Here are defined all the functions and classes related to the encryption part
 """
 
+
+import files
+from tree import ASCIITree
 from Crypto.Hash import SHA256
-import pickle
+from Crypto.PublicKey import RSA
+import pickle, logging, os
+
+log = logging.getLogger(__name__)
 
 
 
@@ -37,7 +43,7 @@ def areTheSame(obj1: object, obj2: object) -> bool:
 
 
 
-def minstd(lastNumber: int) -> int:
+def minstd() -> int:
     """
     Generates a pseudo-random number based on lastNumber, using the MINSTD linear congruential generator.
     2 147 483 645 different numbers are available.
@@ -46,27 +52,87 @@ def minstd(lastNumber: int) -> int:
     :return: a new pseudo-random number
     :rtype: int
     """
-    return (0xbc8f * lastNumber) % 0x7fffffff # 48271 for the first, 2147483647=2**31-1 for the second, according to
+    try:
+        cache = files.loadFile(os.path.join(os.path.split(os.path.split(__file__)[0])[0], "data", "cache"), True)
+        lastNumber = cache["last-minstd"]
+    except FileNotFoundError as e:
+        log.error("%s\nCreating the file", e)
+        lastNumber = 36226479 # First number to use with this algorithm
+        cache = {"last-minstd": lastNumber}
+        files.saveFile(cache, os.path.join(os.path.split(os.path.split(__file__)[0])[0], "data", "cache"), overwrite=True, binary=True)
+    except KeyError:
+        lastNumber = 36226479 # First number to use with this algorithm
+    else:
+        lastNumber = (0xbc8f * lastNumber) % 0x7fffffff # 48271 for the first, 2147483647=2**31-1 for the second, according to
                                               # the new "minimum standard" recommended by Park, Miller and Stockmeyer
+    cache["last-minstd"] = lastNumber
+    files.saveFile(cache, os.path.join(os.path.split(os.path.split(__file__)[0])[0], "data", "cache"), overwrite=True, binary=True)
+    return lastNumber
+
+
+
+def __resetMinstdCache() -> None:
+    """
+    Resets the counter used by the minstd function
+    """
+    log.warning("You are about to reset the minstd count to the default value. Do you really want to proceed ? (y/n)")
+    entry = input(" > ")
+    if entry.lower() != 'y':
+        log.info("The minstd count has NOT been reset.")
+        return
+    log.warning("Reseting the minstd count...")
+    try:
+        cache = files.loadFile(os.path.join(os.path.split(os.path.split(__file__)[0])[0], "data", "cache"), True)
+        del cache["last-minstd"]
+    except FileNotFoundError:
+        pass
+    except KeyError:
+        pass
+
+
+
+def newKeyPair() -> tuple[RSA.RsaKey, RSA.RsaKey]:
+    """
+    Generates a public/private key pair\n
+    /!\\ This function DOES NOT check if the key already exist, you have to do it manually /!\\
+
+    :return: the public/private RSA key couple
+    :rtype: tuple(RSA.RsaKey, RSA.RsaKey)
+    """
+    private = RSA.generate(2048) # 2048 is the key size, recommended by the FIPS standard
+    public = private.public_key()
+    return public, private
+
+
+
+def containsKey(repertory: ASCIITree, key: RSA.RsaKey) -> bool:
+    """
+    Checks if a RSA key is already in a ASCIITree
+
+    :param ASCIITree repertory: the repertory where the key may be stored
+    :param RSA.RsaKey key: the key to check
+    :return: True if the key is in the repertory
+    :rtype: bool 
+    """
+    if key.has_private(): raise ValueError("You cannot explicit a private key")
+    stringKeyWithEnter = key.export_key().decode().split("-----")[2] # Because RSA.RsaKey.export returns:
+    stringKey = "".join(stringKeyWithEnter.split("\n"))              # -----BEGIN PUBLIC KEY-----\nkey\n-----END PUBLIC KEY-----
+    return stringKey in repertory
+
+
+
+
+
 
 
 if __name__ == "__main__":
-    from tqdm import tqdm
-    import files, os
+    from data_manager import initializeLogger
+    initializeLogger()
 
-    filePath = os.path.join(os.path.split(__file__)[0], "minstd")
-    first = 36226479
-    last = first
-    for i in tqdm(range(2**32)):
-        last = minstd(last)
-        if last == first:
-            value = [
-                f"there was an issue at step {i}",
-                {
-                    "nb (int)": last,
-                    "nb (hex)": hex(last)
-                }
-            ]
-            files.saveJson(value, filePath)
-            raise ValueError(i)
-    files.saveJson(["no issue"], filePath)
+    try:    
+        # keysRep = ASCIITree()
+        # public, private = newKeyPair()
+        __resetMinstdCache()
+    except Exception as e:
+        log.error(e)
+
