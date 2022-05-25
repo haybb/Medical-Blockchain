@@ -43,7 +43,7 @@ def areTheSame(obj1: object, obj2: object) -> bool:
 
 
 
-def minstd() -> int:
+def minstd(lastNumber=-1) -> int:
     """
     Generates a pseudo-random number based on lastNumber, using the MINSTD linear congruential generator.
     2 147 483 645 different numbers are available.
@@ -52,23 +52,33 @@ def minstd() -> int:
     :return: a new pseudo-random number
     :rtype: int
     """
+    # A number is given, so the new one is generated based on the one given. Therefore, the new one is not saved in a file
+    if lastNumber == -1:
+        return (0xbc8f * lastNumber) % 0x7fffffff # 48271 for the first, 2147483647=2**31-1 for the second, according to
+                                                  # the new "minimum standard" recommended by Park, Miller and Stockmeyer
+    
+    # In the other case
     try:
-        cache = files.loadFile(os.path.join(os.path.split(os.path.split(__file__)[0])[0], "data", "cache"), True)
-        lastNumber = cache["last-minstd"]
+        lastNumber = files.loadFromBlockchain("last-minstd")
     except FileNotFoundError as e:
         log.error("%s\nCreating the file", e)
         lastNumber = 36226479 # First number to use with this algorithm
-        cache = {"last-minstd": lastNumber}
-        files.saveFile(cache, os.path.join(os.path.split(os.path.split(__file__)[0])[0], "data", "cache"), overwrite=True, binary=True)
+        files.saveToBlockchain(lastNumber, "last-minstd")
     except KeyError:
         lastNumber = 36226479 # First number to use with this algorithm
+    except Exception as e:
+        log.critical(e)
+        return
     else:
         lastNumber = (0xbc8f * lastNumber) % 0x7fffffff # 48271 for the first, 2147483647=2**31-1 for the second, according to
                                               # the new "minimum standard" recommended by Park, Miller and Stockmeyer
-    cache["last-minstd"] = lastNumber
-    files.saveFile(cache, os.path.join(os.path.split(os.path.split(__file__)[0])[0], "data", "cache"), overwrite=True, binary=True)
-    return lastNumber
 
+    if lastNumber == 36226479: # If it matches, it means the minstd has come to the end of the loop
+        error = ValueError("The max number made with these parameters of minstd has been reached. You cannot create new unique numbers anymore")
+        log.critical(error)
+        raise error
+    files.saveToBlockchain(lastNumber, "last-minstd")
+    return lastNumber
 
 
 def __resetMinstdCache() -> None:
@@ -116,7 +126,7 @@ def containsKey(repertory: ASCIITree, key: RSA.RsaKey) -> bool:
     """
     if key.has_private(): raise ValueError("You cannot explicit a private key")
     stringKeyWithEnter = key.export_key().decode().split("-----")[2] # Because RSA.RsaKey.export returns:
-    stringKey = "".join(stringKeyWithEnter.split("\n"))              # -----BEGIN PUBLIC KEY-----\nkey\n-----END PUBLIC KEY-----
+    stringKey = "".join(stringKeyWithEnter.split("\n"))              # -----BEGIN PUBLIC KEY-----\n[key]\n-----END PUBLIC KEY-----
     return stringKey in repertory
 
 
@@ -129,10 +139,7 @@ if __name__ == "__main__":
     from data_manager import initializeLogger
     initializeLogger()
 
-    try:    
-        # keysRep = ASCIITree()
-        # public, private = newKeyPair()
-        __resetMinstdCache()
-    except Exception as e:
-        log.error(e)
+    # __resetMinstdCache()
+    # newMinstdNbr = pseudoMinstd()
+    # print(newMinstdNbr)
 

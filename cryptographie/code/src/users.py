@@ -73,22 +73,22 @@ class User:
         return self._id == __o._id and self._type == __o._type and self._publicKey == __o._publicKey and self._infos == __o._infos
 
 
-    @staticmethod
-    def importUser(uniqueID: int, userType: str, publicKey: RSA.RsaKey, infos: dict):
-        """
-        Creates a new User with the given paramaters
+    # @staticmethod
+    # def importUser(uniqueID: int, userType: str, publicKey: RSA.RsaKey, infos: dict):
+    #     """
+    #     Creates a new User with the given paramaters
 
-        :param int uniqueID: the ID of the user
-        :param str userType: the type of user
-        :param RSA.RsaKey publicKey: the public key of the user
-        :param dict infos: all additionnal infos
-        :return: a new User object with the parameters
-        :rtype: User
-        """
-        newUser = User(uniqueID, userType)
-        newUser._publicKey = publicKey
-        newUser._infos = infos
-        return newUser
+    #     :param int uniqueID: the ID of the user
+    #     :param str userType: the type of user
+    #     :param RSA.RsaKey publicKey: the public key of the user
+    #     :param dict infos: all additionnal infos
+    #     :return: a new User object with the parameters
+    #     :rtype: User
+    #     """
+    #     newUser = User(uniqueID, userType)
+    #     newUser._publicKey = publicKey
+    #     newUser._infos = infos
+    #     return newUser
 
 
 

@@ -4,8 +4,4 @@
 **/__pycache__
 data/
 foo.*
-test.*
-
-
-# Temporary:
-cryptographie/code/src/minstd.json
+test*.*
