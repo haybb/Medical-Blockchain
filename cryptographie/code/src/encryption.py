@@ -3,8 +3,8 @@ Here are defined all the functions and classes related to the encryption part
 """
 
 
-import files
-from tree import ASCIITree
+from .files import *
+from .tree import ASCIITree
 
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.Signature import pss as PKCS1_PSS
