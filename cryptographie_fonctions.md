@@ -66,6 +66,59 @@ Fonction `newKeyPair` :
 - **Paramètres :** aucun.
 - **Retour :** *tuple\[Crypto.RSA.RsaKey, Crypto.RSA.RsaKey\]*; la première clé est la clé publique, la deuxième la privée.
 
+Fonction `symmetricAESEncryption` :
+- **Rôle :** chiffre symétriquement des données en utilisant l'algorithme AES en mode EAX.
+- **Paramètres :**
+    - `data` *(object)* : les données à chiffrer.
+    - `key` *(bytes)* : la clé de chiffrement. :warning: elle doit être faite de 16, 24 ou 32 bytes (128, 192 ou 256 bits).
+- **Retour :** *tuple\[bytes, bytes, bytes, bytes\]*; dans l'ordre : les données chiffrées, la clé de chiffrement, le *tag* utilisé, le *nonce* utilisé.
+
+Fonction `symmetricAESDecryption` :
+- **Rôle :** déchiffre des données chiffrées avec l'algorithme de chiffrement symétrique AES en mode EAX.
+- **Paramètres :**
+    - `encryptedData` *(bytes)* : les données à déchiffrer.
+    - `key` *(bytes)* : la clé utilisée pour le chiffrement.
+    - `tag` *(bytes)* : le *tag* utilisé lors du chiffrement.
+    - `nonce` *(bytes)* : le *nonce* utilisé pour le chiffrement.
+- **Retour :** *object*; les données déchiffrées.
+- **Exceptions :**
+    - `ValueError` : si la clé de chiffrement est incorrecte ou si les données ont été corrompues.
+
+Focntion `asymmetricRSAEncryption` :
+- **Rôle :** chiffre des données avec l'algorithme de chiffrement asymétrique PKCS#1 OAEP (car c'est celui fournit avec le module Crypto), et en utilisant des clés RSA. Ne peut être utilisée pour signer des données.
+- **Paramètres :** 
+    - `data` *(object)* : les données à chiffrer.
+    - `key` *(RSA.RsaKey)* : la clé utilisé pour le chiffrement.
+- **Retour :** *bytes*; les données chiffrées.
+
+Fonction `asymmetricRSADecryption` :
+- **Rôle :** déchiffre des données chiffrées avec l'algorithme de chiffrement asymétrique PKCS#1 OAEP, utilisant des clés RSA.
+- **Paramètres :**
+    - `encryptedData` *(bytes)* : les données à déchiffrer.
+    - `privateKey` *(bytes)* : la clé privée utilisée pour le déchiffrement.
+- **Retour :** *object*; les données déchiffrées.
+- **Exceptions :**
+    - `TypeError` : si la clé n'est pas une clé privée.
+    - `ValueError` : si la clé de chiffrement est incorrecte.
+
+Fonction `RSASignature` :
+- **Rôle :** signe des données avec l'algorithme de chiffrement asymétrique PKCS#1 PSS (car c'est celui fournit avec le module Crypto), utilisant des clés RSA.
+- **Paramètres :**
+    - `data` *(object)* : les données à signer.
+    - `privateKey` *(RSA.RsaKey)* : la clé privée utilisée pour signer les données.
+- **Retour :** *bytes*; la signature des données.
+
+Fonction `verifyRSASignature` :
+- **Rôle :** vérifie la signature de données signées avec l'algorithme de chiffrement PKCS#1 PSS, utilisant des clés RSA.
+- **Paramètres :**
+    - `data` *(object)* : les données à vérifier.
+    - `signature` *(bytes)* : la signature des données.
+    - `publicKey` *(bytes)* : la clé publique utilisée pour vérifier la signature.
+- **Retour :** `None` (lève une exception si la signature est mauvaise).
+- **Exceptions :**
+    - `TypeError` ou `ValueError` : si la signature est incorrecte.
+
+
 
 ## Fichier *users.py*
 Liste `userTypes`

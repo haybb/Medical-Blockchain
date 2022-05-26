@@ -3,45 +3,58 @@ Here are defined all functions and classes used by the server to wrok with the d
 """
 
 
-from tkinter.tix import ASCII
-from weakref import KeyedRef
-from pydantic import EnumError
 import files, encryption
 from users import User, userTypes
 from tree import ASCIITree
+
 import logging, pickle
+
 import os.path as path
 from pathlib import Path
 from Crypto.PublicKey import RSA
+from Crypto.Random import get_random_bytes
 
 log = logging.getLogger(__name__)
 
 
 DEFAULT_CONFIG = {
     "key-chars": "!#$%&()*+-/0123456789<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz~",
-    "max-key-number-of-attempts": 10
+    "max-key-number-of-attempts": 10,
+    "symmetric-key-number-of-bytes": 16
 }
 
 
 
 
 
-def initializeLogger() -> None:
+def initializeLogger(dataPath="") -> None:
     """
-    Initializes the log Should be called only 1 time\n
+    Initializes the log. Should be called only 1 time\n
     The terminal-side logger's logs level is set to DEBUG, the file's one to INFO
+
+    :param str dataPath: the path to the directory where data will be stored
     """
     from datetime import datetime
-    logsPath = path.join(path.split(path.split(__file__)[0])[0], "data", "logs", datetime.now().strftime("%Y-%m-%d") + ".txt")
+
+    if dataPath != "":
+        if path.isabs(dataPath):
+            if path.isdir(dataPath):
+                dataPath = path.join(dataPath, "logs", datetime.now().strftime("%Y-%m-%d") + ".txt")
+            else:
+                raise ValueError("The path has to point to a directory")
+        else:
+            raise ValueError("The path has to be absolute")
+    else:
+        dataPath = path.join(path.split(path.split(__file__)[0])[0], "data", "logs", datetime.now().strftime("%Y-%m-%d") + ".txt")
     
     defaultFormatter = logging.Formatter("%(asctime)s %(levelname)s (%(module)s): %(message)s", "[%Y-%m-%d %H:%M:%S]")
 
     try:
-        fileHandler = logging.FileHandler(logsPath)
+        fileHandler = logging.FileHandler(dataPath)
     except FileNotFoundError:
         from os import makedirs
-        makedirs(path.split(logsPath)[0], exist_ok=True)
-        fileHandler = logging.FileHandler(logsPath)
+        makedirs(path.split(dataPath)[0], exist_ok=True)
+        fileHandler = logging.FileHandler(dataPath)
     fileHandler.setLevel(logging.INFO)
     
     streamHandler = logging.StreamHandler()
@@ -56,6 +69,26 @@ def initializeLogger() -> None:
 
 
 
+def getDirectories(data: list, isAbsolute=False) -> list[str]:
+    """
+    Gets all the elements representing a directory from the given list. They have to exist to be detected.
+
+    :param list data: a list of all the elements to check if they represent a path
+    :return: a list of all the strings representing a directory. Empty if no one is found
+    :rtype: list of str
+    """
+    allDirs = list()
+    for dirToTest in data:
+        if type(dirToTest) == str and path.isdir(dirToTest):
+            if isAbsolute:
+                if path.isabs(dirToTest):
+                    allDirs.append(dirToTest)
+            else:
+                allDirs.append(dirToTest)
+    return allDirs
+
+
+
 
 
 
@@ -65,15 +98,16 @@ class DataManager:
     Deals with the data stored in the server.
     Main class used to deal with data, it is the only object that should be able to do this.
     """
-    def __init__(self, dataPath=None) -> None:
+    def __init__(self, dataPath="") -> None:
         """
         :param dataPath: the absolute path to the file where data is stored. If no path is given (None), the path to the data will be .\\data
-        :type dataPath: str or None
+        :type dataPath: str
         """
 
         log.debug("Starting the data manager...")
 
-        self._dataFiles = { # all the files used
+        # All the files used by the data manager
+        self._dataFiles = {
             "config": { # Contains the config of the data manager
                 "path": "config",
                 "extension": "json",
@@ -91,10 +125,11 @@ class DataManager:
             }
         }
 
-        if dataPath:
+        # Various checks about the data path
+        if dataPath != "":
             if path.isabs(dataPath): # Check if the path is absolute
                 if path.isdir(dataPath): # Check if the path points to a directory
-                    self._dataPath = dataPath
+                    self._dataPath = Path(dataPath)
                 else:
                     raise ValueError("The path has to point to a directory")
             else:
@@ -110,19 +145,21 @@ class DataManager:
                 # self._dataPath = path.join(fileDirPath, "data")
                 self._dataPath = Path(path.join(fileDirPath, "data"))
 
+        log.info("Data will be stored at \"%s\"", self._dataPath)
+
         # Creating the necessary files if they do not exist
         try:
             self._dataPath.mkdir()
         except FileExistsError:
             pass
-        if not path.isfile(self._dataFiles["config"]["path"] + "." + self._dataFiles["config"]["extension"]):
-            log.debug("Creating \"config\" file")
+        if not path.isfile(path.join(self._dataPath, self._dataFiles["config"]["path"] + "." + self._dataFiles["config"]["extension"])):
+            log.debug("Creating \"config\" file at path \"%s\"", self._dataPath)
             self._saveFile(DEFAULT_CONFIG, "config")
-        if not path.isfile(self._dataFiles["users"]["path"] + "." + self._dataFiles["users"]["extension"]):
-            log.debug("Creating \"users\" file")
+        if not path.isfile(path.join(self._dataPath, self._dataFiles["users"]["path"] + "." + self._dataFiles["users"]["extension"])):
+            log.debug("Creating \"users\" file at path \"%s\"", self._dataPath)
             self._saveFile(dict(), "users")
-        if not path.isfile(self._dataFiles["keys"]["path"] + "." + self._dataFiles["keys"]["extension"]):
-            log.debug("Creating \"keys\" file")
+        if not path.isfile(path.join(self._dataPath, self._dataFiles["keys"]["path"] + "." + self._dataFiles["keys"]["extension"])):
+            log.debug("Creating \"keys\" file at path \"%s\"", self._dataPath)
             self._saveFile(ASCIITree(), "keys")
 
         self._config = self._loadFile("config") # Gets the config
@@ -148,43 +185,6 @@ class DataManager:
         }
         self._saveFile(allUsers, "users")
         return uniqueID
-    
-
-    def newUser(self, userType: str, publicKey: RSA.RsaKey, **kwinfos) -> int:
-        r"""
-        Creates a new user based on their public key
-
-        :param str userType: the type of the user
-        :param str publicKey: the public key of the user
-        :param \**kwinfos: additionnal infos about the user
-        :return: the unique ID of the user
-        :rtype: int
-        """
-        newUserID = self._createUser(userType)
-        allPublicKeys = self._loadFile("keys")
-
-        for i in range(self._config["max-key-number-of-attempts"]):
-            # Creating a new key pair
-            # stringKeyWithEnter = publicKey.export_key().decode().split("-----")[2] # Because RSA.RsaKey.export returns:
-            # stringKey = "".join(stringKeyWithEnter.split("\n"))                    # -----BEGIN PUBLIC KEY-----\nkey\n-----END PUBLIC KEY-----
-            stringKey = "abcdefghijkl"
-            # Checking if the key already exist
-            if not stringKey in allPublicKeys:
-                break
-            log.debug("here %i", i)
-            if i == self._config["max-key-number-of-attempts"]-1:
-                try:
-                    self._deleteUser(newUserID)
-                except KeyError:
-                    pass
-                raise TimeoutError("Could not create a new key pair that does not already exist. The user was not created")
-        log.debug("appening user %i", newUserID)
-        allPublicKeys.append(stringKey, uniqueID=newUserID)
-
-        self._modifyUser(newUserID, publicKey=stringKey, **kwinfos)
-        self._saveFile(allPublicKeys, "keys")
-
-        return newUserID
     
 
     def _getUser(self, userID: int) -> User:
@@ -254,7 +254,7 @@ class DataManager:
             else:
                 files.saveFile(data, self._dataPath.joinpath(file["path"] + '.' + file["extension"]), overwrite=overwrite, binary=file["binary"])
     
-
+    
     def _loadFile(self, fileName: str) -> object:
         """
         Loads data from a file
@@ -272,6 +272,125 @@ class DataManager:
                 return files.loadJson(self._dataPath.joinpath(file["path"] + '.' + file["extension"]))
             else:
                 return files.loadFile(self._dataPath.joinpath(file["path"] + '.' + file["extension"]), binary=file["binary"])
+    
+
+    def newUser(self, userType: str, publicKey: RSA.RsaKey, **kwinfos) -> int:
+        r"""
+        Creates a new user based on their public key
+
+        :param str userType: the type of the user
+        :param str publicKey: the public key of the user
+        :param \**kwinfos: additionnal infos about the user
+        :return: the unique ID of the user
+        :rtype: int
+        """
+        newUserID = self._createUser(userType)
+        allPublicKeys = self._loadFile("keys")
+
+        for i in range(self._config["max-key-number-of-attempts"]):
+            # Creating a new key pair
+            stringKeyWithEnter = publicKey.export_key().decode().split("-----")[2] # Because RSA.RsaKey.export returns:
+            stringKey = "".join(stringKeyWithEnter.split("\n"))                    # -----BEGIN PUBLIC KEY-----\nkey\n-----END PUBLIC KEY-----
+
+            # Checking if the key already exist
+            if not stringKey in allPublicKeys:
+                break
+            log.debug("here %i", i)
+            if i == self._config["max-key-number-of-attempts"]-1:
+                try:
+                    self._deleteUser(newUserID)
+                except KeyError:
+                    pass
+                raise TimeoutError("Could not create a new key pair that does not already exist. The user was not created")
+        log.debug("appening user %i", newUserID)
+        allPublicKeys.append(stringKey, uniqueID=newUserID)
+
+        self._modifyUser(newUserID, publicKey=stringKey, **kwinfos)
+        self._saveFile(allPublicKeys, "keys")
+
+        return newUserID
+    
+
+    def symmetricEncryption(self, data: object) -> tuple[bytes]:
+        """
+        Encryptes some data using the AES symmetric-key algorithm.
+
+        :param object data: the data to encrypt
+        :return: a dictionnary containing cipher, key, tag, nonce
+        :rtype: tuple[bytes, bytes, bytes, bytes]
+        """
+        config = self._loadFile("config")
+        keySize = config["symmetric-key-number-of-bytes"]
+        key = get_random_bytes(keySize)
+        return encryption.symmetricAESEncryption(data, key)
+    
+
+    def symmetricDecryption(encryptedData: bytes, key: bytes, tag: bytes, nonce: bytes) -> object:
+        """
+        Decryptes some data encrypted with the AES symmetric-key algorithm.
+
+        :param bytes encryptedData: the encrypted data
+        :param bytes key: the key used for the encryption
+        :param bytes tag: the tag of the encryption
+        :param bytes nonce: the nonce of the encryption
+        :return: the decrypted data
+        :rtype: object
+        :raises ValueError: if the key is incorrect or if the data has been corrupted
+        """
+        return encryption.symmetricAESDecryption(encryptedData, key, tag, nonce)
+    
+
+    def asymmetricEncryption(data: object, key: RSA.RsaKey) -> bytes:
+        """
+        Encryptes some data asymmetrically.
+        The encryption can be made with both public and private key, while the decryption can only be made with the private key. Therefore, this function can only be used for encryption, not signature.
+
+        :param object data: the data to encrypt
+        :param RSA.RsaKey key: the key used for the encryption, can be public or private
+        :return: the encrypted data
+        :rtype: bytes
+        """
+        return encryption.asymmetricRSAEncryption(data, key)
+    
+
+    def asymmetricRSADecryption(encryptedData: bytes, privateKey: RSA.RsaKey) -> object:
+        """
+        Decryptes some data asymmetrically encrypted.
+        The decryption can only be made with the private key.
+
+        :param bytes encryptedData: the encrypted data
+        :param RSA.RsaKey privateKey: the key used for decryption, has to be private
+        :return: the decrypted data
+        :rtype: object
+        :raises TypeError: if the key used for the decryption is not private
+        :raises ValueError: if the key is incorrect
+        """
+        return encryption.asymmetricRSADecryption(encryptedData, privateKey)
+    
+
+    def sign(data: object, privateKey: RSA.RsaKey) -> bytes:
+        """
+        Signs some data.
+        
+        :param object data: the data to encrypt
+        :param RSA.RsaKey key: the key used to sign, has to be private
+        :return: the signature
+        :rtype: bytes
+        """
+        return encryption.RSASignature(data, privateKey)
+    
+
+    def verifySignature(data: object, signature: bytes, publicKey: RSA.RsaKey) -> None:
+        """
+        Verifies a signature.
+
+        :param object data: the data to verify its signature
+        :param bytes signature: the signature to verify
+        :param RSA.RsaKey publicKey: the key used to verify the signature, can be public or private
+        :raises TypeError: if the signature is incorrect
+        :raises ValueError: if the signature is incorrect
+        """
+        encryption.verifyRSASignature(data, signature, publicKey)
 
 
 
@@ -283,34 +402,14 @@ if __name__ == "__main__":
     
     try:
         manager = DataManager()
-        # manager._saveFile(ASCIITree(), "keys", overwrite=True)
-        # manager._saveFile({}, "users", overwrite=True)
+        manager.newUser("patient", encryption.newKeyPair()[0])
 
-        # allKeys = manager._loadFile("keys")
-        # log.debug("allKeys : %s", allKeys)
-        # for i in range(2):
-        #     # publicKey, privateKey = encryption.newKeyPair()
-        #     # stringKeyWithEnter = publicKey.export_key().decode().split("-----")[2] # Because RSA.RsaKey.export returns:
-        #     # stringKey = "".join(stringKeyWithEnter.split("\n"))
-        #     allKeys.append(("%i" % i)*10, ID=i)
-        # log.debug("before : %s", allKeys)
-        # manager._saveFile(allKeys, "keys")
-        # allKeys = manager._loadFile("keys")
-        # log.debug("after : %s", allKeys)
+        # publicKey, privateKey = encryption.newKeyPair()
+        # log.debug("publicKey : %s\nprivateKey : %s", publicKey, privateKey)
+        # stringKeyWithEnter = publicKey.export_key().decode().split("-----")[2] # Because RSA.RsaKey.export returns:
+        # stringKey = "".join(stringKeyWithEnter.split("\n"))   
+        # log.debug("stringKey : %s", stringKey)  
 
-
-        # import tqdm
-        # for i in tqdm.tqdm(range(30)):
-        #     publicKey, privateKey = encryption.newKeyPair()
-        #     manager.newUser("patient", publicKey, number=i)
-        
-        allUsers = manager._loadFile("users")
-        for userID, userDict in allUsers.items():
-            print("user ID : %-10i" % userID)
-        
-        allKeys = manager._loadFile("keys")
-        for key in allKeys._allStrings():
-            print("user ID / user key (first 20 chars) : %-10i || %s...%s...%s" % (key[1][1]["uniqueID"], key[0][:10], key[0][100:110], key[0][-10:]))
 
     except Exception as e:
         log.error(e)

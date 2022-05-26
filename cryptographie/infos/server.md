@@ -2,6 +2,12 @@
 Here are defintions and explanations about all the files that will be used by the server.
 
 
+## To start the server
+The only file used to start the server is the one named "server.py". Do not run another one.  
+Run the file in a terminal. You can specify the **absolute** path to the directory where you want data to be stored. In order to work, this file should already exist.
+
+---
+
 ## Files that can be modified by a user
 ### config.json
 This file is used to configurate the server. It is in JSON format.  
@@ -15,12 +21,12 @@ __Parameters :__
 ## Files that SHALL NOT be modified
 ### users.dat
 A list of all the users and their authorizations.  
-__Format :__ A dictionnary of this shape: { ID of user 1: infos, ID of user 2: infos, ... }. Infos is a dictionnary of all additionnal infos. It contains the expored shape of the user object under the key "object".
+  * __Format :__ A dictionnary of this shape: { ID of user 1: infos; ID of user 2: infos; ... }. Infos is a dictionnary of all additionnal infos. It contains the expored shape of the user object under the key "object".
 
 ### keys.dat
 A tree that contains the public key of all the users. Therefore it is easier to find one among all the keys that exist.
-__Format :__ An ASCIITree class.
+  * __Format :__ An ASCIITree class.
 
 ### cache
 Contains useful infos used by the algorithm. IT MAY NOT BE DELETED.
-__Format :__ A dictionnary that contains all the infos under their dedicated key.
+  * __Format :__ A dictionnary that contains all the infos under their dedicated key.

@@ -6,7 +6,7 @@ Here are defined all functions and classes used to work with files
 
 import json, pickle, logging, sys
 from typing import Union
-from os.path import splitext
+from os.path import splitext, join, split
 
 log = logging.getLogger(__name__)
 
@@ -118,7 +118,32 @@ def loadJson(filePath: str) -> Union[dict, list]:
             data = f.read(2048)
     return json.loads(file)
 
+
+
+def saveToBlockchain(data, key: str) -> None:
+    """
+    TODO : Save the data into the blockchain. Waiting for Hugo's function
+    for now, this function only stores the data in a file
+    :param data: the data to store in the blockchain
+    :param str key: the key under which the data has to be stored
+    """
+    cachePath = join(split(split(__file__)[0])[0], "data", "cache")
+    cache = loadFile(cachePath, True)
+    cache[key] = data
+    saveFile(cache, cachePath)
     
+
+
+def loadFromBlockchain(key: str) -> object:
+    """
+    TODO : Get the data from the blockchain. Waiting for Hugo's function
+    for now, this function only gets the data from a file
+    :param str key: the key under which the data is stored
+    :return: the data strored in the blockchain
+    """
+    cachePath = join(split(split(__file__)[0])[0], "data", "cache")
+    cache = loadFile(cachePath, True)
+    return cache[key]
 
 
 
