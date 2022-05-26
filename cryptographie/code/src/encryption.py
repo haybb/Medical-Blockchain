@@ -3,8 +3,8 @@ Here are defined all the functions and classes related to the encryption part
 """
 
 
-import files
-from tree import ASCIITree
+from .files import *
+from .tree import ASCIITree
 from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 import pickle, logging, os
