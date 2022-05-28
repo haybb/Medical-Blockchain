@@ -333,7 +333,7 @@ class DataManager:
         return encryption.symmetricAESEncryption(data, key)
     
 
-    def symmetricDecryption(encryptedData: bytes, key: bytes, tag: bytes, nonce: bytes) -> object:
+    def symmetricDecryption(self, encryptedData: bytes, key: bytes, tag: bytes, nonce: bytes) -> object:
         """
         Decryptes some data encrypted with the AES symmetric-key algorithm.
 
@@ -348,7 +348,7 @@ class DataManager:
         return encryption.symmetricAESDecryption(encryptedData, key, tag, nonce)
     
 
-    def asymmetricEncryption(data: object, key: RSA.RsaKey) -> bytes:
+    def asymmetricEncryption(self, data: object, key: RSA.RsaKey) -> bytes:
         """
         Encryptes some data asymmetrically.
         The encryption can be made with both public and private key, while the decryption can only be made with the private key. Therefore, this function can only be used for encryption, not signature.
@@ -361,7 +361,7 @@ class DataManager:
         return encryption.asymmetricRSAEncryption(data, key)
     
 
-    def asymmetricRSADecryption(encryptedData: bytes, privateKey: RSA.RsaKey) -> object:
+    def asymmetricRSADecryption(self, encryptedData: bytes, privateKey: RSA.RsaKey) -> object:
         """
         Decryptes some data asymmetrically encrypted.
         The decryption can only be made with the private key.
@@ -376,7 +376,7 @@ class DataManager:
         return encryption.asymmetricRSADecryption(encryptedData, privateKey)
     
 
-    def sign(data: object, privateKey: RSA.RsaKey) -> bytes:
+    def sign(self, data: object, privateKey: RSA.RsaKey) -> bytes:
         """
         Signs some data.
         
@@ -388,7 +388,7 @@ class DataManager:
         return encryption.RSASignature(data, privateKey)
     
 
-    def verifySignature(data: object, signature: bytes, publicKey: RSA.RsaKey) -> None:
+    def verifySignature(self, data: object, signature: bytes, publicKey: RSA.RsaKey) -> None:
         """
         Verifies a signature.
 
@@ -401,7 +401,7 @@ class DataManager:
         encryption.verifyRSASignature(data, signature, publicKey)
 
 
-    def createDataBase(dbName: str) -> object*object:
+    def createDataBase(self, dbName: str) -> (object,object):
         """
         Creates a database, or opens it if already existing
 
@@ -414,7 +414,7 @@ class DataManager:
         return c, conn
 
 
-    def createTable(c: object, conn: object, tableName: str) -> None:
+    def createTable(self, c: object, conn: object, tableName: str) -> None:
         """
         Creates a table in given databse, or raise an error
         :param cursor c: cursor of the given database
@@ -432,7 +432,7 @@ class DataManager:
             print(e)
 
 
-    def insertValue(c: object, conn: object, tableName: str, publicKey: str, personName: str, wallet: str) -> None:
+    def insertValue(self, c: object, conn: object, tableName: str, publicKey: str, personName: str, wallet: str) -> None:
         """
         Inserts value into given table
 
@@ -448,7 +448,7 @@ class DataManager:
             c.execute(comm)
 
 
-    def showTable(c: object, conn: object, tableName: str) -> None:
+    def showTable(self, c: object, conn: object, tableName: str) -> None:
         """
         Display the given table
 
@@ -462,7 +462,7 @@ class DataManager:
             print(c.fetchall())
 
 
-    def deleteRow(c: object, conn: object, tableName: str, nameToDelete: str) -> None:
+    def deleteRow(self, c: object, conn: object, tableName: str, nameToDelete: str) -> None:
         """
         Delete one row for a given name
 
