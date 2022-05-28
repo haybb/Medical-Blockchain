@@ -3,8 +3,8 @@ Here are defined all the functions and classes related to the encryption part
 """
 
 
-from .files import *
-from .tree import ASCIITree
+from files import *
+from tree import ASCIITree
 
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.Signature import pss as PKCS1_PSS
@@ -63,11 +63,11 @@ def minstd(lastNumber=-1) -> int:
     
     # In the other case
     try:
-        lastNumber = files.loadFromBlockchain("last-minstd")
+        lastNumber = loadFromBlockchain("last-minstd")
     except FileNotFoundError as e:
         log.error("%s\nCreating the file", e)
         lastNumber = 36226479 # First number to use with this algorithm
-        files.saveToBlockchain(lastNumber, "last-minstd")
+        saveToBlockchain(lastNumber, "last-minstd")
     except KeyError:
         lastNumber = 36226479 # First number to use with this algorithm
     except Exception as e:
@@ -81,7 +81,7 @@ def minstd(lastNumber=-1) -> int:
         error = ValueError("The max number made with these parameters of minstd has been reached. You cannot create new unique numbers anymore")
         log.critical(error)
         raise error
-    files.saveToBlockchain(lastNumber, "last-minstd")
+    saveToBlockchain(lastNumber, "last-minstd")
     return lastNumber
 
 
@@ -96,7 +96,7 @@ def __resetMinstdCache() -> None:
         return
     log.warning("Reseting the minstd count...")
     try:
-        cache = files.loadFile(os.path.join(os.path.split(os.path.split(__file__)[0])[0], "data", "cache"), True)
+        cache = loadFile(os.path.join(os.path.split(os.path.split(__file__)[0])[0], "data", "cache"), True)
         del cache["last-minstd"]
     except FileNotFoundError:
         pass

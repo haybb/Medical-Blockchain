@@ -15,10 +15,10 @@ from solana.transaction import Transaction
 
 client = Client(endpoint="https://api.mainnet-beta.solana.com", commitment=Confirmed)
 
-# import here your id.json file containing your keypair
+# import here your id.json file containing your keypair (mine is hidden)
 # or generate a new one using Keypair()
 
-f = open('id.json')
+f = open('id_auth.json')
 secret_key = json.load(f)
 f.close()
 owner = Keypair.from_secret_key(bytes(secret_key))
