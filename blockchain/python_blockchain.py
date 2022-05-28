@@ -4,16 +4,16 @@ from hashlib import sha256
 
 class Block:
 
-    def __init__(self, index, nonce, prev_hash, data, timestamp=None):
-        """Initialisation of the Block class
+    def __init__(self, index: int, nonce: int, prev_hash: str, data: list, timestamp=None) -> None:
+        """
+        Initialisation of the Block class
 
         :param int index: index of the block
         :param int nonce: number of tries to find a hash that satisfies the difficulty
         :param str prev_hash: previous block hash
         :param list data: attached data to the block
         :param float timestamp: given timestamp or generated one with time module
-        :return: /
-        :rtype: /"""
+        """
 
         self.index = index
         self.nonce = nonce
@@ -23,29 +23,36 @@ class Block:
 
 
     @property
-    def hash_calculation(self):
-        """Calculation of a SHA256 hash
+    def hash_calculation(self) -> str:
+        """
+        Calculation of a SHA256 hash
 
         :return: hash of the block
-        :rtype: str"""
+        :rtype: str
+        """
 
         str_block = f'{self.index}{self.nonce}{self.prev_hash}{self.data}{self.timestamp}'
         return sha256(str_block.encode()).hexdigest()
 
 
-    def __repr__(self):
-        """Printable presentation of one block
+    def __repr__(self) -> str:
+        """
+        Printable presentation of one block
 
         :return: presentation of a Block
-        :rtype: str"""
-        return f'\nIndex: {self.index} \nNonce: {self.nonce} \nPrevious hash: {self.prev_hash} \nData: {self.data} \nTimestamp: {self.timestamp} \n'
+        :rtype: str
+        """
+        return f'\nIndex: {self.index} \nNonce: {self.nonce} \nPrevious hash: {self.prev_hash} \nData: {self.data}' \
+               f'\nTimestamp: {self.timestamp} \n'
 
 
 
 class Blockchain:
 
-    def __init__(self):
-        """Initialization of the Blockchain class"""
+    def __init__(self) -> None:
+        """
+        Initialization of the Blockchain class
+        """
 
         self.chain = []
         self.current_data = []
@@ -53,19 +60,23 @@ class Blockchain:
         self.genesis_block()
 
 
-    def genesis_block(self):
-        """First block added to the blockchain, with arbitrary value of 0 for both nonce and previous hash"""
+    def genesis_block(self) -> None:
+        """
+        First block added to the blockchain, with arbitrary value of 0 for both nonce and previous hash
+        """
 
         self.add_block(nonce=0, prev_hash='0')
 
 
-    def add_block(self, nonce, prev_hash):
-        """Addition of a block to the blockchain
+    def add_block(self, nonce: int, prev_hash: str) -> Block:
+        """
+        Addition of a block to the blockchain
 
         :param int nonce: number of tries to find a hash that satisfies the difficulty
         :param str prev_hash: previous block hash
         :return: the block added
-        :rtype: Block"""
+        :rtype: Block
+        """
 
         block = Block(
             index=len(self.chain),
@@ -79,13 +90,15 @@ class Blockchain:
 
 
     @staticmethod
-    def check_validity(prev_block, block):
-        """Checks the validity of 2 given blocks according to their hash, timestamp, proof and index
+    def check_validity(prev_block: Block, block: Block) -> bool:
+        """
+        Checks the validity of 2 given blocks according to their hash, timestamp, proof and index
 
         :param Block prev_block: previous block
         :param Block block: new block
         :return: True if blockchain is valid, False otherwise
-        :rtype: bool"""
+        :rtype: bool
+        """
 
         if prev_block.hash_calculation != block.prev_hash:
             return False
@@ -102,15 +115,17 @@ class Blockchain:
         return True
 
 
-    def new_data(self, sender, recipient, quantity, message):
-        """Attaches new data to the current one
+    def new_data(self, sender: str, recipient: str, quantity: float, message: str) -> bool:
+        """
+        Attaches new data to the current one
 
         :param str sender: sender of the transaction
         :param str recipient: receiver of the transaction
         :param float quantity: quantity of tokens to send
         :param str message: message attached to the transaction
         :return: True
-        :rtype: bool"""
+        :rtype: bool
+        """
 
         self.current_data.append({
             'sender': sender,
@@ -122,12 +137,14 @@ class Blockchain:
 
 
     @staticmethod
-    def proof_of_work(last_nonce):
-        """Proof of work algorithm : counts the attempts to verify the proof with the nonce variable
+    def proof_of_work(last_nonce: int) -> int:
+        """
+        Proof of work algorithm : counts the attempts to verify the proof with the nonce variable
 
         :param int last_nonce: previous number of tries required to find the hash
         :return: nonce
-        :rtype: int"""
+        :rtype: int
+        """
 
         nonce = 0
 
@@ -138,13 +155,15 @@ class Blockchain:
 
 
     @staticmethod
-    def verify_proof(last_nonce, nonce):
-        """Verifies that the given hash matches the desired one, with the difficulty required
+    def verify_proof(last_nonce: int, nonce: int) -> int:
+        """
+        Verifies that the given hash matches the desired one, with the difficulty required
 
         :param int last_nonce: previous nonce
         :param int nonce: current nonce
         :return: True if sha256 of last_nonce & nonce matches the difficulty required, False otherwise
-        :rtype: bool"""
+        :rtype: bool
+        """
 
         to_find = f'{last_nonce}{nonce}'.encode()
         hash_to_find = sha256(to_find).hexdigest()
@@ -153,21 +172,25 @@ class Blockchain:
 
 
     @property
-    def last_block(self):
-        """Returns the last block of the chain
+    def last_block(self) -> Block:
+        """
+        Returns the last block of the chain
 
         :return: last block of the chain
-        :rtype: Block"""
+        :rtype: Block
+        """
 
         return self.chain[-1]
 
 
-    def block_mining(self, miner_details):
-        """Adds a new block with the given miner details when validations are completed
+    def block_mining(self, miner_details: str) -> Block:
+        """
+        Adds a new block with the given miner details when validations are completed
 
         :param str miner_details: details of the miner
         :return: the last block when validations are completed
-        :rtype: Block"""
+        :rtype: Block
+        """
 
         self.new_data(
             sender='0', # chosen value 0 for a new block
@@ -185,12 +208,14 @@ class Blockchain:
         return block
 
 
-    def new_node(self, address):
-        """Adds a new node address
+    def new_node(self, address:  str) -> bool:
+        """
+        Adds a new node address
 
         :param str address: address of the new node
         :return: True
-        :rtype: bool"""
+        :rtype: bool
+        """
 
         self.nodes.add(address)
         return True

@@ -126,7 +126,7 @@ class DataManager:
                 "extension": "dat",
                 "binary": True
             },
-            "database": { # Contains a database which references every specialists
+            "database": { # Contains a database which references all specialists
                 "path": "database",
                 "extension": "db",
                 "binary": True
@@ -494,37 +494,19 @@ if __name__ == "__main__":
         # log.debug("stringKey : %s", stringKey)
 
 
-        #ERROR (data_manager): createDataBase() takes 1 positional argument but 2 were given
-        c, conn = manager.createDataBase("ListeSpecialistes.db")
-        manager.createTable(c, conn, "Liste")
-
-        manager.insertValue(c, conn, "Liste", "cléPublique1", "Médecin", "Chup9he48sSAuPKGF7M2eXNVJXYbxDWFnrC6dSbDqkgi")
-        manager.insertValue(c, conn, "Liste", "cléPublique2", "Laboratoire", "9xcCpz4Y3BVSFiM7ZWZvS3uT5tUo9xsqpLJadCmEAM7Y")
-        manager.insertValue(c, conn, "Liste", "cléPublique3", "Patient", "AfzPooLwjpmhjjo7KR44fSivhwuxCsgHiEPAuhNgakvw")
-        manager.showTable(c, conn, "Liste")
-
-        manager.deleteRow(c, conn, "Liste", "Patient")
-        manager.showTable(c, conn, "Liste")
-
-        conn.close()
-
-        # c.execute("INSERT INTO Liste VALUES(:pubkey, 'Medecin', 'Chup9he48sSAuPKGF7M2eXNVJXYbxDWFnrC6dSbDqkgi')",
-        #           {'pubkey': 'pûbkey'})
+        # TEST DATABASE
+        # c, conn = manager.createDataBase("ListeSpecialistes.db")
+        # manager.createTable(c, conn, "Liste")
         #
-        # c.execute("INSERT INTO Liste VALUES(':pubkey','Laboratoire','9xcCpz4Y3BVSFiM7ZWZvS3uT5tUo9xsqpLJadCmEAM7Y')",
-        #           {'pubkey': 'pûbkey'})
+        # manager.insertValue(c, conn, "Liste", "cléPublique1", "Médecin", "Chup9he48sSAuPKGF7M2eXNVJXYbxDWFnrC6dSbDqkgi")
+        # manager.insertValue(c, conn, "Liste", "cléPublique2", "Laboratoire", "9xcCpz4Y3BVSFiM7ZWZvS3uT5tUo9xsqpLJadCmEAM7Y")
+        # manager.insertValue(c, conn, "Liste", "cléPublique3", "Patient", "AfzPooLwjpmhjjo7KR44fSivhwuxCsgHiEPAuhNgakvw")
+        # manager.showTable(c, conn, "Liste")
         #
-        # c.execute("INSERT INTO Liste VALUES(':pubkey','Patient','AfzPooLwjpmhjjo7KR44fSivhwuxCsgHiEPAuhNgakvw')",
-        #           {'pubkey': 'pûbkey'})
-
-        # if __name__ == '__main__':
+        # manager.deleteRow(c, conn, "Liste", "Patient")
+        # manager.showTable(c, conn, "Liste")
         #
-        #     insertValue()
-        #     c.execute("SELECT * FROM Liste")
-        #     print(c.fetchall())
-        #
-        #     conn.commit()
-        #     conn.close()
+        # conn.close()
 
 
     except Exception as e:
