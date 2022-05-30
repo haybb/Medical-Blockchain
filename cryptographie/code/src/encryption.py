@@ -3,8 +3,10 @@ Here are defined all the functions and classes related to the encryption part
 """
 
 
-from .files import *
-from .tree import ASCIITree
+# from .files import *
+# from .tree import ASCIITree
+from files import *
+from tree import ASCIITree
 
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.Signature import pss as PKCS1_PSS
@@ -140,7 +142,7 @@ def symmetricAESEncryption(data: object, key: bytes) -> tuple[bytes]:
     Encryptes some data using the AES symmetric-key algorithm.
 
     :param object data: the data to encrypt
-    :param bytes key: the key used for the encryption
+    :param bytes key: the key used for the encryption. It must be 16, 24 or 32 bytes long (respectively for AES-128, AES-192 or AES-256)
     :return: a dictionnary containing cipher, key, tag, nonce
     :rtype: tuple[bytes, bytes, bytes, bytes]
     """
@@ -252,9 +254,9 @@ if __name__ == "__main__":
     from data_manager import initializeLogger
     initializeLogger()
 
-    data = "abc"
-    # from Crypto.Random import get_random_bytes
-    # data = get_random_bytes(32)
-    publicKey, privateKey = newKeyPair()
-    signature = RSASignature(data, privateKey)
-    verifyRSASignature(data, signature, newKeyPair()[0])
+    baseKey = b"abcdefghijklmnop"
+
+    encrypted, key, tag, nonce = symmetricAESEncryption("salut les potos", baseKey)
+    print(f"{{\n    encrypted: {encrypted}\n    key: {key}\n    tag: {tag}\n    nonce: {nonce}\n}}")
+    decrypted = symmetricAESDecryption(encrypted, key, tag, nonce)
+    print(decrypted)

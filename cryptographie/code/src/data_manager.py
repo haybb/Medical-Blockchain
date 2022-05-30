@@ -170,7 +170,7 @@ class DataManager:
             log.debug("Creating \"keys\" file at path \"%s\"", self._dataPath)
             self._saveFile(ASCIITree(), "keys")
 
-        self._config = self._loadFile("config") # Gets the config
+        self.config = self._loadFile("config") # Gets the config
 
         log.debug("Data manager started")
 
@@ -276,11 +276,12 @@ class DataManager:
         except KeyError:
             raise FileNotFoundError("This file does not exist")
         else:
+            filePath = self._dataPath.joinpath(file["path"] + '.' + file["extension"])
             if file["extension"] == "json":
-                return files.loadJson(self._dataPath.joinpath(file["path"] + '.' + file["extension"]))
+                return files.loadJson(filePath)
             else:
-                return files.loadFile(self._dataPath.joinpath(file["path"] + '.' + file["extension"]), binary=file["binary"])
-    
+                return files.loadFile(filePath, binary=file["binary"])
+
 
     def newUser(self, userType: str, publicKey: RSA.RsaKey, **kwinfos) -> int:
         r"""
@@ -295,7 +296,7 @@ class DataManager:
         newUserID = self._createUser(userType)
         allPublicKeys = self._loadFile("keys")
 
-        for i in range(self._config["max-key-number-of-attempts"]):
+        for i in range(self.config["max-key-number-of-attempts"]):
             # Creating a new key pair
             stringKeyWithEnter = publicKey.export_key().decode().split("-----")[2] # Because RSA.RsaKey.export returns:
             stringKey = "".join(stringKeyWithEnter.split("\n"))                    # -----BEGIN PUBLIC KEY-----\nkey\n-----END PUBLIC KEY-----
@@ -304,7 +305,7 @@ class DataManager:
             if not stringKey in allPublicKeys:
                 break
             log.debug("here %i", i)
-            if i == self._config["max-key-number-of-attempts"]-1:
+            if i == self.config["max-key-number-of-attempts"]-1:
                 try:
                     self._deleteUser(newUserID)
                 except KeyError:
@@ -401,7 +402,7 @@ class DataManager:
         encryption.verifyRSASignature(data, signature, publicKey)
 
 
-    def createDataBase(self, dbName: str) -> (object,object):
+    def _createDataBase(self, dbName: str) -> (object,object):
         """
         Creates a database, or opens it if already existing
 
@@ -414,7 +415,7 @@ class DataManager:
         return c, conn
 
 
-    def createTable(self, c: object, conn: object, tableName: str) -> None:
+    def _createTable(self, c: object, conn: object, tableName: str) -> None:
         """
         Creates a table in given databse, or raise an error
         :param cursor c: cursor of the given database
@@ -432,7 +433,7 @@ class DataManager:
             print(e)
 
 
-    def insertValue(self, c: object, conn: object, tableName: str, publicKey: str, personName: str, wallet: str) -> None:
+    def _insertValue(self, c: object, conn: object, tableName: str, publicKey: str, personName: str, wallet: str) -> None:
         """
         Inserts value into given table
 
@@ -448,7 +449,7 @@ class DataManager:
             c.execute(comm)
 
 
-    def showTable(self, c: object, conn: object, tableName: str) -> None:
+    def _showTable(self, c: object, conn: object, tableName: str) -> None:
         """
         Display the given table
 
@@ -462,7 +463,7 @@ class DataManager:
             print(c.fetchall())
 
 
-    def deleteRow(self, c: object, conn: object, tableName: str, nameToDelete: str) -> None:
+    def _deleteRow(self, c: object, conn: object, tableName: str, nameToDelete: str) -> None:
         """
         Delete one row for a given name
 

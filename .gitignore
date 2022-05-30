@@ -5,4 +5,5 @@
 data/
 foo.*
 test*.*
+downloads
 /blockchain/id_auth.json

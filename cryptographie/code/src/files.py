@@ -31,7 +31,7 @@ def saveFile(data: object, filePath: str, overwrite=True, binary=False) -> None:
         else:
             while True: # If the data si to big, pickle raises a RecursionError exception.
                         # It can be avoided by raising the recursion limit, but at a certain point,
-                        # it has to be raised because it can causes to crash the program.
+                        # this exception has to be raised because it can causes to crash the program.
                 try:
                     toSave = pickle.dumps(data)
                     break
@@ -64,23 +64,26 @@ def saveFile(data: object, filePath: str, overwrite=True, binary=False) -> None:
 
 
 
-def loadFile(filePath: str, binary: bool) -> object:
+def loadFile(filePath: str, binary: bool, inBytes=False) -> object:
     """
     Returns the data from a file
 
     :param str filePath: the path of the file
     :param bool binary: True if the file is binary
+    :param bool inBytes: False by default, True if you want the bytes if the file and not its content
     :return: the data stored in the file
     :rtype: object
     """
-    openMode = "rb" if binary else 'r'
-    file = bytes() if binary else str()
+    openMode = "rb" if binary or inBytes else 'r'
+    file = bytes() if binary or inBytes else str()
     with open(filePath, openMode) as f:
         data = f.read(2048)
         while data:
             file += data
             data = f.read(2048)
-    if binary:
+    if inBytes:
+        return file
+    elif binary:
         return pickle.loads(file)
     else:
         return file
@@ -120,7 +123,7 @@ def loadJson(filePath: str) -> Union[dict, list]:
 
 
 
-def saveToBlockchain(data, key: str) -> None:
+def sendToBlockchain(data, key: str) -> None:
     """
     TODO : Save the data into the blockchain. Waiting for Hugo's function
     for now, this function only stores the data in a file
@@ -134,7 +137,7 @@ def saveToBlockchain(data, key: str) -> None:
     
 
 
-def loadFromBlockchain(key: str) -> object:
+def getFromBlockchain(key: str) -> object:
     """
     TODO : Get the data from the blockchain. Waiting for Hugo's function
     for now, this function only gets the data from a file
