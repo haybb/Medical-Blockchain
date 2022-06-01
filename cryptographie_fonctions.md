@@ -1,7 +1,7 @@
 # Liste de toutes les fonctions pouvant être utilisées extérieurement
 
 ## Requêtes
-*Remplir ici toutes les fonctions recquises extérieurement.*
+*Remplir ici toutes les fonctions requises extérieurement.*
 Fonction | Rôle
 ---------|------
 exemple | Ceci est un exemple.

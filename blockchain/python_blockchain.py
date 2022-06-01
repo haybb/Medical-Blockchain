@@ -43,11 +43,13 @@ class Block:
         :rtype: str
         """
         return f'\nIndex: {self.index} \nNonce: {self.nonce} \nPrevious hash: {self.prev_hash} \nData: {self.data}' \
-               f'\nTimestamp: {self.timestamp} \n'
+               f'\nTimestamp: {self.timestamp}\n'
 
 
 
 class Blockchain:
+    global difficulty
+    difficulty = 4
 
     def __init__(self) -> None:
         """
@@ -268,3 +270,4 @@ if __name__ == '__main__':
     block = blockchain.block_mining('PC 3')
     print("Let's directly use the block_mining() function:", block)
     print("Finally, our blockchain:\n", blockchain.chain)
+    print(len(blockchain.chain))
