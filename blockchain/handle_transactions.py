@@ -196,4 +196,15 @@ if __name__ == '__main__':
 
     print('ETAT FINAL \n')
     print('Blockchain du médecin:', blockchain_doctor.chain)
-    print('Blockchain du spécialiste:', blockchain_specialist.chain)
+    print('Blockchain du spécialiste:', blockchain_specialist.chain, '\n')
+
+    key = b'gX\xad\xc6~\xa5\xc9\xeeZ8RV\x14(\x0fp'
+
+    f = loadFile("Analyses M.Dupont.txt", binary=False)
+    print(f, end="\n----------\n")
+    cipher, key, tag, nonce = symmetricAESEncryption(f, key)
+
+    print(cipher, end="\n----------\n")
+
+    decryptedFile = symmetricAESDecryption(cipher, key, tag, nonce)
+    print(decryptedFile)
