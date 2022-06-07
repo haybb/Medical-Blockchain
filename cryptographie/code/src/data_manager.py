@@ -417,7 +417,7 @@ class DataManager:
 
     def _createTable(self, c: object, conn: object, tableName: str) -> None:
         """
-        Creates a table in given databse, or raise an error
+        Create a table in given databse, or raise an error
         :param cursor c: cursor of the given database
         :param connection conn: connection of the given databse
         :param str tableName: name of the table
@@ -425,7 +425,7 @@ class DataManager:
         """
         try:
             with conn:
-                comm = "CREATE TABLE " + tableName + " (cle publique text, nom text, portefeuille text)"
+                comm = "CREATE TABLE " + tableName + " (cle integer, nom text, portefeuille text)"
                 # this syntax prevents SQL injections
                 c.execute(comm)
 
@@ -435,7 +435,7 @@ class DataManager:
 
     def _insertValue(self, c: object, conn: object, tableName: str, publicKey: str, personName: str, wallet: str) -> None:
         """
-        Inserts value into given table
+        Insert value into given table
 
         :param cursor c: cursor
         :param connection conn: connection
@@ -451,7 +451,7 @@ class DataManager:
 
     def _showTable(self, c: object, conn: object, tableName: str) -> None:
         """
-        Display the given table
+        Show the given table
 
         :param object c: cursor
         :param object conn: connection
@@ -496,18 +496,17 @@ if __name__ == "__main__":
 
 
         # TEST DATABASE
-        # c, conn = manager.createDataBase("ListeSpecialistes.db")
-        # manager.createTable(c, conn, "Liste")
-        #
-        # manager.insertValue(c, conn, "Liste", "cléPublique1", "Médecin", "Chup9he48sSAuPKGF7M2eXNVJXYbxDWFnrC6dSbDqkgi")
-        # manager.insertValue(c, conn, "Liste", "cléPublique2", "Laboratoire", "9xcCpz4Y3BVSFiM7ZWZvS3uT5tUo9xsqpLJadCmEAM7Y")
-        # manager.insertValue(c, conn, "Liste", "cléPublique3", "Patient", "AfzPooLwjpmhjjo7KR44fSivhwuxCsgHiEPAuhNgakvw")
-        # manager.showTable(c, conn, "Liste")
-        #
-        # manager.deleteRow(c, conn, "Liste", "Patient")
-        # manager.showTable(c, conn, "Liste")
-        #
-        # conn.close()
+        c, conn = manager.createDataBase("ListeSpecialistes.db")
+        manager.createTable(c, conn, "Liste")
+
+        manager.insertValue(c, conn, "Liste", 48271, "Médecin", "Chup9he48sSAuPKGF7M2eXNVJXYbxDWFnrC6dSbDqkgi")
+        manager.insertValue(c, conn, "Liste", 2147483647, "Laboratoire", "9xcCpz4Y3BVSFiM7ZWZvS3uT5tUo9xsqpLJadCmEAM7Y")
+        manager.showTable(c, conn, "Liste")
+
+        manager.deleteRow(c, conn, "Liste", "Patient")
+        manager.showTable(c, conn, "Liste")
+
+        conn.close()
 
 
     except Exception as e:

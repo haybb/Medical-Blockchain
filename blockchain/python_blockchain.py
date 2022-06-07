@@ -94,7 +94,7 @@ class Blockchain:
     @staticmethod
     def check_validity(prev_block: Block, block: Block) -> bool:
         """
-        Checks the validity of 2 given blocks according to their hash, timestamp, proof and index
+        Check the validity of 2 given blocks according to their hash, timestamp, proof and index
 
         :param Block prev_block: previous block
         :param Block block: new block
@@ -119,7 +119,7 @@ class Blockchain:
 
     def new_data(self, sender: str, recipient: str, quantity: float, message: str) -> bool:
         """
-        Attaches new data to the current one
+        Attach new data to the current one
 
         :param str sender: sender of the transaction
         :param str recipient: receiver of the transaction
@@ -141,7 +141,7 @@ class Blockchain:
     @staticmethod
     def proof_of_work(last_nonce: int) -> int:
         """
-        Proof of work algorithm : counts the attempts to verify the proof with the nonce variable
+        Proof of work algorithm : count the attempts to verify the proof with the nonce variable
 
         :param int last_nonce: previous number of tries required to find the hash
         :return: nonce
@@ -159,11 +159,11 @@ class Blockchain:
     @staticmethod
     def verify_proof(last_nonce: int, nonce: int) -> int:
         """
-        Verifies that the given hash matches the desired one, with the difficulty required
+        Verify that the given hash match the desired one, with the difficulty required
 
         :param int last_nonce: previous nonce
         :param int nonce: current nonce
-        :return: True if sha256 of last_nonce & nonce matches the difficulty required, False otherwise
+        :return: True if sha256 of last_nonce & nonce match the difficulty required, False otherwise
         :rtype: bool
         """
 
@@ -176,7 +176,7 @@ class Blockchain:
     @property
     def last_block(self) -> Block:
         """
-        Returns the last block of the chain
+        Return the last block of the chain
 
         :return: last block of the chain
         :rtype: Block
@@ -187,7 +187,7 @@ class Blockchain:
 
     def block_mining(self, miner_details: str) -> Block:
         """
-        Adds a new block with the given miner details when validations are completed
+        Add a new block with the given miner details when validations are completed
 
         :param str miner_details: details of the miner
         :return: the last block when validations are completed
@@ -212,7 +212,7 @@ class Blockchain:
 
     def new_node(self, address:  str) -> bool:
         """
-        Adds a new node address
+        Add a new node address
 
         :param str address: address of the new node
         :return: True
@@ -270,4 +270,3 @@ if __name__ == '__main__':
     block = blockchain.block_mining('PC 3')
     print("Let's directly use the block_mining() function:", block)
     print("Finally, our blockchain:\n", blockchain.chain)
-    print(len(blockchain.chain))

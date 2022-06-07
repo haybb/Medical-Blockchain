@@ -18,9 +18,6 @@ def send_transaction(token: str, quantity: float, recipient: str, memo: str) -> 
     return os.system(f'spl-token transfer {token} {quantity} {recipient} --fund-recipient --with-memo "{memo}"')
 
 
-def obtain_last_block():
-    return os.system()
-
 if __name__ == '__main__':
     tkn = '9Cn5bRH8KaCpk91zZyLQDF6AFkp6ycZyP7TDMDWps1uc'
     qty = 1

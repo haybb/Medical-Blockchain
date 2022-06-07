@@ -4,7 +4,7 @@
 
 **Dictionnaire :**
 - _minstd_ : entier associé à la dernière valeur de minstd générée,
-- _message_: string sous la forme:`objetRequete*DELIMITER*ipp*DELIMITER*rpps*DELIMITER*ipMedecin*SEPARATOR*signatureMedecin*`
+- _message_: string sous la forme:`objetRequete*DEL*ipp*DEL*rpps*DEL*ipMedecin*SEP*signatureMedecin*`
 
 La valeur associée à data sous message sera encryptée avec la clé publique du destinataire (le spécialiste par exemple).
 
@@ -12,12 +12,12 @@ La valeur associée à data sous message sera encryptée avec la clé publique d
 - _IPP_ = identifiant permanent du patient
 - _RPPS_ = répertoire partagé des professionnels de santé
 
-`*DELIMITER*` pour séparer les données et `*SEPARATOR*` pour séparer données et signature
+`*DEL*` pour séparer les données et `*SEP*` pour séparer données et signature
 
 ## Au retour
 
 Dictionnaire:
 - minstd : entier associé à la dernière valeur de minstd générée,
-- message: string sous la forme: `retour*DELIMITER*cleSymetrique*SEPARATOR*signatureSpecialiste`
+- message: string sous la forme: `retour*DEL*cleSymetrique*SEP*signatureSpecialiste`
 
 La valeur associée à data sous message sera encrypté avec la clé publique de l'émetteur de la 1ere requête (ici le médecin).
