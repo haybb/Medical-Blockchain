@@ -2,12 +2,13 @@
 
 ## Propos
 Ceci est mon TIPE réalisé lors de ma 3/2 en MP.  
+Le thème de l'année était "santé et prévention".
 Ma partie fut de créer une blockchain pour transmettre des clés de chiffrements, de manière sécurisée.  
 Ces dernières étaient associées aux dossiers médicaux des patients.  
   
   
 ## Explications
-Les explications *complètes* figurent dans **PrésentationTIPE.pdf**.  
+Les explications *complètes* figurent dans **Presentation_TIPE.pdf**.  
 **TL;DR** : j'ai tout d'abord crée une blockchain à l'aide de Solana (installation expliquée dans *PrésentationTIPE.pdf*), cf *blockchain/solana_blockchain.py*
 Puis j'ai implémenté à la main une blockchain dans *blockchain/python_blockchain.py*  
 
