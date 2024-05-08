@@ -7,3 +7,6 @@ foo.*
 test*.*
 downloads
 /blockchain/id_auth.json
+.idea
+compte-rendu.txt
+.gitignore

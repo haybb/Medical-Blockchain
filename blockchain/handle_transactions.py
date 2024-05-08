@@ -1,3 +1,9 @@
+import sys
+import os
+
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(parent_dir)
+
 import python_blockchain
 from cryptographie.code.src.encryption import *
 
@@ -200,7 +206,7 @@ if __name__ == '__main__':
 
     key = b'gX\xad\xc6~\xa5\xc9\xeeZ8RV\x14(\x0fp'
 
-    f = loadFile("Analyses M.Dupont.txt", binary=False)
+    f = loadFile("./Analyses_M.Dupont.txt", binary=False)
     print(f, end="\n----------\n")
     cipher, key, tag, nonce = symmetricAESEncryption(f, key)
 
