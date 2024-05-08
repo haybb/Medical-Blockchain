@@ -9,9 +9,9 @@ Ces dernières étaient associées aux dossiers médicaux des patients.
   
 ## Explications
 Les explications *complètes* figurent dans **Presentation_TIPE.pdf**.  
-**TL;DR** : j'ai tout d'abord crée une blockchain à l'aide de Solana (installation expliquée dans *PrésentationTIPE.pdf*), cf *blockchain/solana_blockchain.py*
+**TL;DR** : j'ai tout d'abord créé une blockchain à l'aide de Solana ( installation expliquée dans *PrésentationTIPE.pdf* ), cf *blockchain/solana_blockchain.py*.  
 Puis j'ai implémenté à la main une blockchain dans *blockchain/python_blockchain.py*  
-
+  
 Mon binôme s'est intéressé à la partie cryptographique du système en implémentant notamment le RSA et AES. 
   
    
