@@ -2,7 +2,7 @@
 
 ## Propos
 Ceci est mon TIPE réalisé lors de ma 3/2 en MP.  
-Le thème de l'année était "santé et prévention".
+Le thème de l'année était "santé et prévention".  
 Ma partie fut de créer une blockchain pour transmettre des clés de chiffrements, de manière sécurisée.  
 Ces dernières étaient associées aux dossiers médicaux des patients.  
   
